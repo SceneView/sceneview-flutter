@@ -16,7 +16,7 @@ import io.github.sceneview.loaders.loadHdrIndirectLight
 import io.github.sceneview.loaders.loadHdrSkybox
 import io.github.sceneview.math.Position
 import io.github.sceneview.math.Rotation
-import io.github.sceneview.node.ModelNode
+import io.github.sceneview.nodes.ModelNode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -107,30 +107,7 @@ class SceneViewWrapper(
         activity.application.registerActivityLifecycleCallbacks(this.activityLifecycleCallbacks)
     }
 
-    /**
-     * Handles the specified method call received from Flutter.
-     *
-     *
-     * Handler implementations must submit a result for all incoming calls, by making a single
-     * call on the given [Result] callback. Failure to do so will result in lingering Flutter
-     * result handlers. The result may be submitted asynchronously and on any thread. Calls to
-     * unknown or unimplemented methods should be handled using [Result.notImplemented].
-     *
-     *
-     * Any uncaught exception thrown by this method will be caught by the channel implementation
-     * and logged, and an error result will be sent back to Flutter.
-     *
-     *
-     * The handler is called on the platform thread (Android main thread). For more details see
-     * [Threading in
- * the Flutter Engine](https://github.com/flutter/engine/wiki/Threading-in-the-Flutter-Engine).
-     *
-     * @param call A [MethodCall].
-     * @param result A [Result] used for submitting the result of the call.
-     */
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
-        // Methods called from the method channel in sceneview_controller.dart will end up here
-        // Simply interact wiht your sceneView instance from here
         if (call.method == "showDemo") {
             _mainScope.launch {
                 showModel()

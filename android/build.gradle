@@ -2,7 +2,7 @@ group 'io.github.sceneview.sceneview_flutter'
 version '1.0-SNAPSHOT'
 
 buildscript {
-    ext.kotlin_version = '1.6.10'
+    ext.kotlin_version = '1.7.21'
     repositories {
         mavenLocal()
         google()
@@ -10,7 +10,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.1.2'
+        classpath 'com.android.tools.build:gradle:7.4.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -49,7 +49,5 @@ android {
 
 
 dependencies {
-    // This needs to point to the latest version of SceneView
-    // I have the latest github commit in my maven locas as version 0.11.0
-    implementation 'io.github.sceneview:sceneview:0.11.0'
+    implementation 'io.github.sceneview:sceneview:1.0.4'
 }
