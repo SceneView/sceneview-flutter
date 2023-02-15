@@ -16,6 +16,7 @@ import io.github.sceneview.loaders.loadHdrIndirectLight
 import io.github.sceneview.loaders.loadHdrSkybox
 import io.github.sceneview.math.Position
 import io.github.sceneview.math.Rotation
+import io.github.sceneview.model.Model
 import io.github.sceneview.nodes.ModelNode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -24,9 +25,9 @@ import kotlinx.coroutines.launch
 class SceneViewWrapper(
     context: Context,
     private val activity: Activity,
+    private val messenger: BinaryMessenger,
     id: Int,
-    private val messenger: BinaryMessenger
-): PlatformView, MethodCallHandler {
+) : PlatformView, MethodCallHandler {
     private val sceneView: SceneView = SceneView(context)
     private val _mainScope = CoroutineScope(Dispatchers.Main)
     private lateinit var activityLifecycleCallbacks: Application.ActivityLifecycleCallbacks
@@ -47,8 +48,7 @@ class SceneViewWrapper(
         activity.application.unregisterActivityLifecycleCallbacks(this.activityLifecycleCallbacks)
     }
 
-
-    private suspend fun showModel() {
+    private suspend fun showModel(flutterNode: FlutterNode) {
         val hdrFile = "environments/studio_small_09_2k.hdr"
         sceneView.loadHdrIndirectLight(hdrFile, specularFilter = true) {
             intensity(30_000f)
@@ -57,38 +57,54 @@ class SceneViewWrapper(
             intensity(50_000f)
         }
 
-        val model = sceneView.modelLoader.loadModel("models/MaterialSuite.glb")!!
-        val modelNode = ModelNode(sceneView, model).apply {
-            transform(
-                position = Position(z = -4.0f),
-                rotation = Rotation(x = 15.0f)
-            )
-            scaleToUnitsCube(2.0f)
-            // TODO: Fix centerOrigin
-            //     centerOrigin(Position(x=-1.0f, y=-1.0f))
-            playAnimation()
-        }
-        sceneView.addChildNode(modelNode)
+        val node = buildNode(flutterNode) ?: return
+        sceneView.addChildNode(node)
         Log.d("Done", "Done")
+    }
+
+    private suspend fun buildNode(flutterNode: FlutterNode): ModelNode? {
+        var model: Model? = null
+        when (flutterNode) {
+            is FlutterReferenceNode -> {
+                val fileLocation = Utils.getFlutterAssetKey(activity, flutterNode.fileLocation)
+                Log.d("SceneViewWrapper", fileLocation)
+                model =
+                    sceneView.modelLoader.loadModel(fileLocation)!!
+            }
+        }
+        if (model != null) {
+            val modelNode = ModelNode(sceneView, model).apply {
+                transform(
+                    position = Position(z = -4.0f),
+                    rotation = Rotation(x = 15.0f)
+                )
+                scaleToUnitsCube(2.0f)
+                // TODO: Fix centerOrigin
+                //     centerOrigin(Position(x=-1.0f, y=-1.0f))
+                playAnimation()
+            }
+            return modelNode
+        }
+        return null
     }
 
     private fun setupLifeCycle() {
         activityLifecycleCallbacks = object : Application.ActivityLifecycleCallbacks {
             override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-                Log.d("c","c")
+                Log.d("c", "c")
             }
 
             override fun onActivityStarted(activity: Activity) {
-                Log.d("s","s")
+                Log.d("s", "s")
             }
 
             override fun onActivityResumed(activity: Activity) {
-                Log.d("Wrapper","Resumed")
+                Log.d("Wrapper", "Resumed")
                 sceneView.resume()
             }
 
             override fun onActivityPaused(activity: Activity) {
-                Log.d("Wrapper","Paused")
+                Log.d("Wrapper", "Paused")
                 sceneView.pause()
             }
 
@@ -99,7 +115,7 @@ class SceneViewWrapper(
             override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}
 
             override fun onActivityDestroyed(activity: Activity) {
-                Log.d("Wrapper","Destroyed")
+                Log.d("Wrapper", "Destroyed")
                 sceneView.destroy()
             }
         }
@@ -109,8 +125,10 @@ class SceneViewWrapper(
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         if (call.method == "showDemo") {
+
+            val flutterNode = FlutterNode.from(call.arguments as Map<String, *>)
             _mainScope.launch {
-                showModel()
+                showModel(flutterNode)
             }
             result.success(null)
             return

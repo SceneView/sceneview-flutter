@@ -10,9 +10,10 @@ import io.flutter.plugin.common.StandardMessageCodec
 import io.flutter.plugin.platform.PlatformView
 import io.flutter.plugin.platform.PlatformViewFactory
 
-class SceneViewFactory(private val activity: Activity, private val messenger: BinaryMessenger) : PlatformViewFactory(StandardMessageCodec.INSTANCE) {
+class SceneViewFactory(private val activity: Activity, private val messenger: BinaryMessenger) :
+    PlatformViewFactory(StandardMessageCodec.INSTANCE) {
     override fun create(context: Context, viewId: Int, args: Any?): PlatformView {
-        Log.d("Factory","Creating new view instance")
-        return SceneViewWrapper(context, activity, viewId, messenger)
+        Log.d("Factory", "Creating new view instance")
+        return SceneViewWrapper(context, activity, messenger, viewId)
     }
 }

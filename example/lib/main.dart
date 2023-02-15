@@ -22,8 +22,7 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     Future.delayed(const Duration(seconds: 1)).then((value) {
       if (!mounted) return;
-
-      _controller.displayDemo();
+      _controller.displayDemo('assets/models/MaterialSuite.glb');
     });
   }
 
