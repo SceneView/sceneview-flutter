@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:sceneview_flutter/sceneview_flutter.dart';
+import 'package:sceneview_flutter/sceneview_node.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,17 +16,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  SceneViewController _controller = SceneViewController();
-
-  @override
-  void initState() {
-    super.initState();
-    Future.delayed(const Duration(seconds: 1)).then((value) {
-      if (!mounted) return;
-      _controller.displayDemo('assets/models/MaterialSuite.glb');
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -33,7 +23,15 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: const Text('Scene view example app'),
         ),
-        body: SceneView(_controller),
+        body: SceneView(
+          onViewCreated: (controller) {
+            controller.addNode(SceneViewNode(
+              fileLocation: 'assets/models/MaterialSuite.glb',
+              position: KotlinFloat3(z: -4.0),
+              rotation: KotlinFloat3(x: 15),
+            ));
+          },
+        ),
       ),
     );
   }

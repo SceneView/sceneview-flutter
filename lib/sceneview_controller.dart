@@ -1,22 +1,27 @@
 import 'package:flutter/services.dart';
+import 'package:sceneview_flutter/sceneview_flutter_platform_interface.dart';
+import 'package:sceneview_flutter/sceneview_node.dart';
 
 class SceneViewController {
-  MethodChannel? _channel;
+  SceneViewController._({
+    required this.sceneId,
+  });
 
-  bool get isRegistered => _channel != null;
+  final int sceneId;
 
-  void onViewRegistered(int id) {
-    _channel = MethodChannel('scene_view_$id');
+  static Future<SceneViewController> init(
+    int sceneId,
+  ) async {
+    await SceneviewFlutterPlatform.instance.init(sceneId);
+    return SceneViewController._(sceneId: sceneId);
   }
 
-  void displayDemo(String fileLocation) {
-    if (!isRegistered) return;
-
-    _channel?.invokeMethod(
-      "showDemo",
-      {'fileLocation': fileLocation},
-    );
+  void addNode(SceneViewNode node) {
+    SceneviewFlutterPlatform.instance.addNode(node);
   }
 
-// Add new methods here and call the method channel to execute them native side
+  void dispose() {
+    SceneviewFlutterPlatform.instance.dispose(sceneId);
+  }
+
 }

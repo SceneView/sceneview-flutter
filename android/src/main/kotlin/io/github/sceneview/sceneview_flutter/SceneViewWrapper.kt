@@ -14,8 +14,6 @@ import io.flutter.plugin.platform.PlatformView
 import io.github.sceneview.SceneView
 import io.github.sceneview.loaders.loadHdrIndirectLight
 import io.github.sceneview.loaders.loadHdrSkybox
-import io.github.sceneview.math.Position
-import io.github.sceneview.math.Rotation
 import io.github.sceneview.model.Model
 import io.github.sceneview.nodes.ModelNode
 import kotlinx.coroutines.CoroutineScope
@@ -48,7 +46,7 @@ class SceneViewWrapper(
         activity.application.unregisterActivityLifecycleCallbacks(this.activityLifecycleCallbacks)
     }
 
-    private suspend fun showModel(flutterNode: FlutterNode) {
+    private suspend fun addNode(flutterNode: FlutterSceneViewNode) {
         val hdrFile = "environments/studio_small_09_2k.hdr"
         sceneView.loadHdrIndirectLight(hdrFile, specularFilter = true) {
             intensity(30_000f)
@@ -62,23 +60,24 @@ class SceneViewWrapper(
         Log.d("Done", "Done")
     }
 
-    private suspend fun buildNode(flutterNode: FlutterNode): ModelNode? {
+    private suspend fun buildNode(flutterNode: FlutterSceneViewNode): ModelNode? {
         var model: Model? = null
         when (flutterNode) {
             is FlutterReferenceNode -> {
                 val fileLocation = Utils.getFlutterAssetKey(activity, flutterNode.fileLocation)
                 Log.d("SceneViewWrapper", fileLocation)
                 model =
-                    sceneView.modelLoader.loadModel(fileLocation)!!
+                    sceneView.modelLoader.loadModel(fileLocation)
             }
         }
         if (model != null) {
             val modelNode = ModelNode(sceneView, model).apply {
                 transform(
-                    position = Position(z = -4.0f),
-                    rotation = Rotation(x = 15.0f)
+                    position = flutterNode.position,
+                    rotation = flutterNode.rotation,
+                    //scale = flutterNode.scale,
                 )
-                scaleToUnitsCube(2.0f)
+                scaleToUnitsCube(flutterNode.scaleUnits)
                 // TODO: Fix centerOrigin
                 //     centerOrigin(Position(x=-1.0f, y=-1.0f))
                 playAnimation()
@@ -124,15 +123,19 @@ class SceneViewWrapper(
     }
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
-        if (call.method == "showDemo") {
-
-            val flutterNode = FlutterNode.from(call.arguments as Map<String, *>)
-            _mainScope.launch {
-                showModel(flutterNode)
+        when (call.method) {
+            "init" -> {
+                result.success(null)
             }
-            result.success(null)
-            return
+            "addNode" -> {
+                val flutterNode = FlutterSceneViewNode.from(call.arguments as Map<String, *>)
+                _mainScope.launch {
+                    addNode(flutterNode)
+                }
+                result.success(null)
+                return
+            }
+            else -> result.notImplemented()
         }
-        result.notImplemented()
     }
 }
