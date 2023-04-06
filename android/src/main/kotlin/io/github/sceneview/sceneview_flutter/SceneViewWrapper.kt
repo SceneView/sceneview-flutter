@@ -12,10 +12,12 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.platform.PlatformView
 import io.github.sceneview.SceneView
-import io.github.sceneview.loaders.loadHdrIndirectLight
-import io.github.sceneview.loaders.loadHdrSkybox
+import io.github.sceneview.ar.ArSceneView
+//import io.github.sceneview.loaders.loadHdrIndirectLight
+//import io.github.sceneview.loaders.loadHdrSkybox
 import io.github.sceneview.model.Model
-import io.github.sceneview.nodes.ModelNode
+import io.github.sceneview.node.ModelNode
+//import io.github.sceneview.nodes.ModelNode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -26,7 +28,7 @@ class SceneViewWrapper(
     private val messenger: BinaryMessenger,
     id: Int,
 ) : PlatformView, MethodCallHandler {
-    private val sceneView: SceneView = SceneView(context)
+    private val sceneView: ArSceneView = ArSceneView(activity)
     private val _mainScope = CoroutineScope(Dispatchers.Main)
     private lateinit var activityLifecycleCallbacks: Application.ActivityLifecycleCallbacks
     private val _channel = MethodChannel(messenger, "scene_view_$id")
@@ -34,8 +36,8 @@ class SceneViewWrapper(
     init {
         _channel.setMethodCallHandler(this)
         setupLifeCycle()
-        sceneView.pause()
-        sceneView.resume()
+        //sceneView.pause()
+        //sceneView.resume()
     }
 
     override fun getView(): View {
@@ -48,7 +50,7 @@ class SceneViewWrapper(
 
     private suspend fun addNode(flutterNode: FlutterSceneViewNode) {
         val hdrFile = "environments/studio_small_09_2k.hdr"
-        sceneView.loadHdrIndirectLight(hdrFile, specularFilter = true) {
+       /* sceneView.loadHdrIndirectLight(hdrFile, specularFilter = true) {
             intensity(30_000f)
         }
         sceneView.loadHdrSkybox(hdrFile) {
@@ -57,12 +59,12 @@ class SceneViewWrapper(
 
         val node = buildNode(flutterNode) ?: return
         sceneView.addChildNode(node)
-        Log.d("Done", "Done")
+        Log.d("Done", "Done")*/
     }
 
     private suspend fun buildNode(flutterNode: FlutterSceneViewNode): ModelNode? {
         var model: Model? = null
-        when (flutterNode) {
+        /*when (flutterNode) {
             is FlutterReferenceNode -> {
                 val fileLocation = Utils.getFlutterAssetKey(activity, flutterNode.fileLocation)
                 Log.d("SceneViewWrapper", fileLocation)
@@ -83,7 +85,7 @@ class SceneViewWrapper(
                 playAnimation()
             }
             return modelNode
-        }
+        }*/
         return null
     }
 
@@ -99,12 +101,12 @@ class SceneViewWrapper(
 
             override fun onActivityResumed(activity: Activity) {
                 Log.d("Wrapper", "Resumed")
-                sceneView.resume()
+                //sceneView.resume()
             }
 
             override fun onActivityPaused(activity: Activity) {
                 Log.d("Wrapper", "Paused")
-                sceneView.pause()
+                //sceneView.pause()
             }
 
             override fun onActivityStopped(activity: Activity) {

@@ -49,5 +49,5 @@ android {
 
 
 dependencies {
-    implementation 'io.github.sceneview:sceneview:1.0.4'
+    implementation 'io.github.sceneview:arsceneview:0.9.8'
 }
