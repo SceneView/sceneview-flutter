@@ -28,7 +28,7 @@ class SceneViewWrapper(
     private val messenger: BinaryMessenger,
     id: Int,
 ) : PlatformView, MethodCallHandler {
-    private val sceneView: ArSceneView = ArSceneView(activity)
+    private val sceneView: SceneView = SceneView(context)
     private val _mainScope = CoroutineScope(Dispatchers.Main)
     private lateinit var activityLifecycleCallbacks: Application.ActivityLifecycleCallbacks
     private val _channel = MethodChannel(messenger, "scene_view_$id")
