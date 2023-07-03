@@ -29,7 +29,7 @@ class SceneViewWrapper(
     id: Int,
 ) : PlatformView, MethodCallHandler {
     private val TAG = "SceneViewWrapper"
-    private lateinit var sceneView: ArSceneView
+    private var sceneView: ArSceneView
     private val _mainScope = CoroutineScope(Dispatchers.Main)
     private lateinit var activityLifecycleCallbacks: Application.ActivityLifecycleCallbacks
     private val _channel = MethodChannel(messenger, "scene_view_$id")
@@ -38,7 +38,7 @@ class SceneViewWrapper(
         Log.i(TAG, "init")
         sceneView = ArSceneView(context)
         _channel.setMethodCallHandler(this)
-        setupLifeCycle()
+        //setupLifeCycle()
         //sceneView.pause()
         //sceneView.resume()
     }
@@ -50,7 +50,7 @@ class SceneViewWrapper(
 
     override fun dispose() {
         Log.i(TAG, "dispose")
-        activity.application.unregisterActivityLifecycleCallbacks(this.activityLifecycleCallbacks)
+        //activity.application.unregisterActivityLifecycleCallbacks(this.activityLifecycleCallbacks)
     }
 
     private suspend fun addNode(flutterNode: FlutterSceneViewNode) {
@@ -122,7 +122,7 @@ class SceneViewWrapper(
 
             override fun onActivityDestroyed(activity: Activity) {
                 Log.d(TAG, "onActivityDestroyed")
-                sceneView.destroy()
+                //sceneView.destroy()
             }
         }
 
