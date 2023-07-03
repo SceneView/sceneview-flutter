@@ -28,12 +28,15 @@ class SceneViewWrapper(
     private val messenger: BinaryMessenger,
     id: Int,
 ) : PlatformView, MethodCallHandler {
-    private val sceneView: ArSceneView = ArSceneView(context)
+    private val TAG = "SceneViewWrapper"
+    private lateinit var sceneView: ArSceneView
     private val _mainScope = CoroutineScope(Dispatchers.Main)
     private lateinit var activityLifecycleCallbacks: Application.ActivityLifecycleCallbacks
     private val _channel = MethodChannel(messenger, "scene_view_$id")
 
     init {
+        Log.i(TAG, "init")
+        sceneView = ArSceneView(context)
         _channel.setMethodCallHandler(this)
         setupLifeCycle()
         //sceneView.pause()
@@ -41,10 +44,12 @@ class SceneViewWrapper(
     }
 
     override fun getView(): View {
+        Log.i(TAG, "getView")
         return sceneView
     }
 
     override fun dispose() {
+        Log.i(TAG, "dispose")
         activity.application.unregisterActivityLifecycleCallbacks(this.activityLifecycleCallbacks)
     }
 
@@ -55,11 +60,11 @@ class SceneViewWrapper(
         }
         sceneView.loadHdrSkybox(hdrFile) {
             intensity(50_000f)
-        }
+        }*/
 
         val node = buildNode(flutterNode) ?: return
-        sceneView.addChildNode(node)
-        Log.d("Done", "Done")*/
+        sceneView.addChild(node)
+        Log.d("Done", "Done")
     }
 
     private suspend fun buildNode(flutterNode: FlutterSceneViewNode): ModelNode? {
@@ -92,31 +97,31 @@ class SceneViewWrapper(
     private fun setupLifeCycle() {
         activityLifecycleCallbacks = object : Application.ActivityLifecycleCallbacks {
             override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-                Log.d("c", "c")
+                Log.d(TAG, "onActivityCreated")
             }
 
             override fun onActivityStarted(activity: Activity) {
-                Log.d("s", "s")
+                Log.d(TAG, "onActivityStarted")
             }
 
             override fun onActivityResumed(activity: Activity) {
-                Log.d("Wrapper", "Resumed")
+                Log.d(TAG, "onActivityResumed")
                 //sceneView.resume()
             }
 
             override fun onActivityPaused(activity: Activity) {
-                Log.d("Wrapper", "Paused")
+                Log.d(TAG, "onActivityPaused")
                 //sceneView.pause()
             }
 
             override fun onActivityStopped(activity: Activity) {
-
+                Log.d(TAG, "onActivityStopped")
             }
 
             override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}
 
             override fun onActivityDestroyed(activity: Activity) {
-                Log.d("Wrapper", "Destroyed")
+                Log.d(TAG, "onActivityDestroyed")
                 sceneView.destroy()
             }
         }
@@ -130,10 +135,11 @@ class SceneViewWrapper(
                 result.success(null)
             }
             "addNode" -> {
-                val flutterNode = FlutterSceneViewNode.from(call.arguments as Map<String, *>)
-                _mainScope.launch {
-                    addNode(flutterNode)
-                }
+                Log.i(TAG, "addNode")
+                //val flutterNode = FlutterSceneViewNode.from(call.arguments as Map<String, *>)
+                //_mainScope.launch {
+                //    addNode(flutterNode)
+                //}
                 result.success(null)
                 return
             }

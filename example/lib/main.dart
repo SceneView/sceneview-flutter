@@ -25,11 +25,11 @@ class _MyAppState extends State<MyApp> {
         ),
         body: SceneView(
           onViewCreated: (controller) {
-            controller.addNode(SceneViewNode(
-              fileLocation: 'assets/models/MaterialSuite.glb',
-              position: KotlinFloat3(z: -4.0),
-              rotation: KotlinFloat3(x: 15),
-            ));
+            // controller.addNode(SceneViewNode(
+            //   fileLocation: 'assets/models/MaterialSuite.glb',
+            //   position: KotlinFloat3(z: -4.0),
+            //   rotation: KotlinFloat3(x: 15),
+            // ));
           },
         ),
       ),
