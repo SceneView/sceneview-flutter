@@ -11,13 +11,9 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.platform.PlatformView
-import io.github.sceneview.SceneView
 import io.github.sceneview.ar.ArSceneView
-//import io.github.sceneview.loaders.loadHdrIndirectLight
-//import io.github.sceneview.loaders.loadHdrSkybox
 import io.github.sceneview.model.Model
 import io.github.sceneview.node.ModelNode
-//import io.github.sceneview.nodes.ModelNode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
