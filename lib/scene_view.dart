@@ -40,7 +40,7 @@ class _SceneViewState extends State<SceneView> {
         );
       },
       onCreatePlatformView: (params) {
-        return PlatformViewsService.initAndroidView(
+        return PlatformViewsService.initExpensiveAndroidView(
           id: params.id,
           viewType: viewType,
           layoutDirection: TextDirection.ltr,
