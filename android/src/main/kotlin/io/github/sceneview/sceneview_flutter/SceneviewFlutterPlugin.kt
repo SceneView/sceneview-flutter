@@ -1,16 +1,14 @@
 package io.github.sceneview.sceneview_flutter
 
+import android.app.Activity
 import android.app.Application
 import android.util.Log
 import androidx.annotation.NonNull
-
+import androidx.lifecycle.LifecycleOwner
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
-import io.flutter.plugin.common.MethodCall
-import io.flutter.plugin.common.MethodChannel
-import io.flutter.plugin.common.MethodChannel.MethodCallHandler
-import io.flutter.plugin.common.MethodChannel.Result
+
 
 /** SceneviewFlutterPlugin */
 class SceneviewFlutterPlugin : FlutterPlugin, ActivityAware {
@@ -36,10 +34,18 @@ class SceneviewFlutterPlugin : FlutterPlugin, ActivityAware {
 
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
         Log.i(TAG, "onAttachedToActivity")
-        flutterPluginBinding?.platformViewRegistry?.registerViewFactory(
-            "SceneView",
-            SceneViewFactory(binding.activity, flutterPluginBinding!!.binaryMessenger)
-        )
+        val activity: Activity = binding.activity
+        if (activity is LifecycleOwner) {
+            Log.i(TAG, "activity is LifecycleOwner")
+            flutterPluginBinding?.platformViewRegistry?.registerViewFactory(
+                "SceneView",
+                SceneViewFactory(
+                    binding.activity,
+                    flutterPluginBinding!!.binaryMessenger,
+                    activity.lifecycle,
+                )
+            )
+        }
     }
 
     override fun onDetachedFromActivityForConfigChanges() {
