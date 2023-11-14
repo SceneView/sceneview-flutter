@@ -1,7 +1,6 @@
 package io.github.sceneview.sceneview_flutter
 
 import android.app.Activity
-import android.app.Application
 import android.util.Log
 import androidx.annotation.NonNull
 import androidx.lifecycle.LifecycleOwner
@@ -12,7 +11,6 @@ import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 
 /** SceneviewFlutterPlugin */
 class SceneviewFlutterPlugin : FlutterPlugin, ActivityAware {
-    private var activityLifecycleCallbacks: Application.ActivityLifecycleCallbacks? = null
 
     private val TAG = "SceneviewFlutterPlugin"
 

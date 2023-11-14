@@ -23,14 +23,19 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: const Text('Scene view example app'),
         ),
-        body: SceneView(
-          onViewCreated: (controller) {
-            // controller.addNode(SceneViewNode(
-            //   fileLocation: 'assets/models/MaterialSuite.glb',
-            //   position: KotlinFloat3(z: -4.0),
-            //   rotation: KotlinFloat3(x: 15),
-            // ));
-          },
+        body: Stack(
+          children: [
+            SceneView(
+              onViewCreated: (controller) {
+                print('flutter: onViewCreated');
+                controller.addNode(SceneViewNode(
+                  fileLocation: 'assets/models/MaterialSuite.glb',
+                  position: KotlinFloat3(z: -1.0),
+                  rotation: KotlinFloat3(x: 15),
+                ));
+              },
+            ),
+          ],
         ),
       ),
     );
