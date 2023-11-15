@@ -48,6 +48,6 @@ android {
 }
 
 dependencies {
-    implementation 'io.github.sceneview:arsceneview:1.2.2'
+    implementation 'io.github.sceneview:arsceneview:1.2.3'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 }
