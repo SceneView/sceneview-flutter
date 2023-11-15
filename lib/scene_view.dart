@@ -5,14 +5,20 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:sceneview_flutter/augmented_image.dart';
+import 'package:sceneview_flutter/light_estimation_mode.dart';
 import 'package:sceneview_flutter/sceneview_controller.dart';
 
 class SceneView extends StatefulWidget {
   const SceneView({
     super.key,
     this.onViewCreated,
+    this.augmentedImages,
+    this.lightEstimationMode,
   });
 
+  final List<AugmentedImage>? augmentedImages;
+  final LightEstimationMode? lightEstimationMode;
   final Function(SceneViewController)? onViewCreated;
 
   @override
@@ -23,12 +29,22 @@ class _SceneViewState extends State<SceneView> {
   final Completer<SceneViewController> _controller =
       Completer<SceneViewController>();
 
+  final Map<String, dynamic> creationParams = <String, dynamic>{};
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.augmentedImages != null) {
+      creationParams['augmentedImages'] =
+          widget.augmentedImages!.map((e) => e.toJson()).toList();
+    }
+    creationParams['lightEstimationMode'] = widget.lightEstimationMode?.index;
+  }
+
   @override
   Widget build(BuildContext context) {
     // This is used in the platform side to register the view.
     const String viewType = 'SceneView';
-    // Pass parameters to the platform side.
-    const Map<String, dynamic> creationParams = <String, dynamic>{};
 
     return PlatformViewLink(
       viewType: viewType,
@@ -71,7 +87,7 @@ class _SceneViewState extends State<SceneView> {
   }
 
   Future<void> _disposeController() async {
-    final SceneViewController controller = await _controller.future;
+    final controller = await _controller.future;
     controller.dispose();
   }
 }

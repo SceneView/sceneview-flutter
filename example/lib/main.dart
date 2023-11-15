@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:sceneview_flutter/augmented_image.dart';
+import 'package:sceneview_flutter/light_estimation_mode.dart';
 import 'dart:async';
 
 import 'package:sceneview_flutter/sceneview_flutter.dart';
@@ -26,13 +28,19 @@ class _MyAppState extends State<MyApp> {
         body: Stack(
           children: [
             SceneView(
+              lightEstimationMode: LightEstimationMode.AMBIENT_INTENSITY,
+              augmentedImages: [
+                AugmentedImage(name: 'rabbit',location: 'assets/augmentedimages/rabbit.jpg', ),
+              ],
               onViewCreated: (controller) {
                 print('flutter: onViewCreated');
-                controller.addNode(SceneViewNode(
-                  fileLocation: 'assets/models/MaterialSuite.glb',
-                  position: KotlinFloat3(z: -1.0),
-                  rotation: KotlinFloat3(x: 15),
-                ));
+                controller.addNode(
+                  SceneViewNode(
+                    fileLocation: 'assets/models/MaterialSuite.glb',
+                    position: KotlinFloat3(z: -1.0),
+                    rotation: KotlinFloat3(x: 15),
+                  ),
+                );
               },
             ),
           ],

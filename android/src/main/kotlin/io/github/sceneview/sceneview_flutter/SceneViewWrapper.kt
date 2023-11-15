@@ -13,6 +13,8 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.platform.PlatformView
 import io.github.sceneview.ar.ARSceneView
+import io.github.sceneview.ar.arcore.addAugmentedImage
+import io.github.sceneview.ar.node.AugmentedImageNode
 import io.github.sceneview.model.ModelInstance
 import io.github.sceneview.node.ModelNode
 import kotlinx.coroutines.CoroutineScope
@@ -25,11 +27,13 @@ class SceneViewWrapper(
     lifecycle: Lifecycle,
     messenger: BinaryMessenger,
     id: Int,
+    arConfig: ARSceneViewConfig,
 ) : PlatformView, MethodCallHandler {
     private val TAG = "SceneViewWrapper"
     private var sceneView: ARSceneView
     private val _mainScope = CoroutineScope(Dispatchers.Main)
     private val _channel = MethodChannel(messenger, "scene_view_$id")
+    val augmentedImageNodes = mutableListOf<AugmentedImageNode>()
 
     override fun getView(): View {
         Log.i(TAG, "getView:")
@@ -42,10 +46,16 @@ class SceneViewWrapper(
 
     init {
         Log.i(TAG, "init")
+        Log.i(TAG, "there are " + arConfig.augmentedImages.size.toString() + " augmentedImages")
+
         sceneView = ARSceneView(context, sharedLifecycle = lifecycle)
         sceneView.apply {
             configureSession { session, config ->
-                config.lightEstimationMode = Config.LightEstimationMode.ENVIRONMENTAL_HDR
+                arConfig.augmentedImages.forEach {
+                    config.addAugmentedImage(session, it.name, it.bitmap)
+                }
+
+                config.lightEstimationMode = arConfig.lightEstimationMode
                 config.depthMode = when (session.isDepthModeSupported(Config.DepthMode.AUTOMATIC)) {
                     true -> Config.DepthMode.AUTOMATIC
                     else -> Config.DepthMode.DISABLED
