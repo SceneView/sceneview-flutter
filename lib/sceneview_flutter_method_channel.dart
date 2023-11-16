@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:sceneview_flutter/sceneview_node.dart';
+import 'package:sceneview_flutter/session_frame.dart';
 import 'package:sceneview_flutter/tracking_failure_reason.dart';
 
 import 'sceneview_flutter_platform_interface.dart';
@@ -49,8 +50,8 @@ class MethodChannelSceneViewFlutter extends SceneviewFlutterPlatform {
   }
 
   @override
-  Stream<String> onSessionUpdated() {
-    return _events().whereType<String>();
+  Stream<SessionFrame> onSessionUpdated() {
+    return _events().whereType<SessionFrame>();
   }
 
   @override
@@ -65,11 +66,29 @@ class MethodChannelSceneViewFlutter extends SceneviewFlutterPlatform {
             .add(TrackingFailureReason.values[call.arguments as int]);
         break;
       case 'onSessionUpdated':
-        _mapEventStreamController.add(call.arguments);
+        try {
+          final map = _getArgumentDictionary(call);
+
+          if (map.containsKey('planes')) {
+            print('----------- contains planes');
+            if ((map['planes'] as List<dynamic>).isNotEmpty) {
+              print('-----------$map');
+
+              _mapEventStreamController.add(SessionFrame.fromJson(map));
+            }
+          }
+        } catch (ex, st) {
+          print('ERROR: $ex');
+          print('ERROR: $st');
+        }
         break;
       default:
         throw MissingPluginException();
     }
+  }
+
+  Map<String, dynamic> _getArgumentDictionary(MethodCall call) {
+    return Map<String, dynamic>.from(call.arguments);
   }
 
   @override

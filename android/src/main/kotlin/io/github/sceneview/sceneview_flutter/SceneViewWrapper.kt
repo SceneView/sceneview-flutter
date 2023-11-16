@@ -14,9 +14,11 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.platform.PlatformView
 import io.github.sceneview.ar.ARSceneView
 import io.github.sceneview.ar.arcore.addAugmentedImage
+import io.github.sceneview.ar.arcore.getUpdatedPlanes
 import io.github.sceneview.ar.node.AugmentedImageNode
 import io.github.sceneview.model.ModelInstance
 import io.github.sceneview.node.ModelNode
+import io.github.sceneview.sceneview_flutter.flutter_models.FlutterPose
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -34,7 +36,7 @@ class SceneViewWrapper(
     private var sceneView: ARSceneView
     private val _mainScope = CoroutineScope(Dispatchers.Main)
     private val _channel = MethodChannel(messenger, "scene_view_$id")
-    val augmentedImageNodes = mutableListOf<AugmentedImageNode>()
+    val _augmentedImageNodes = mutableListOf<AugmentedImageNode>()
 
     override fun getView(): View {
         Log.i(TAG, "getView:")
@@ -68,7 +70,28 @@ class SceneViewWrapper(
                 config.instantPlacementMode = arConfig.instantPlacementMode
             }
             onSessionUpdated = { session, frame ->
-                _channel.invokeMethod("onSessionUpdated", frame.timestamp.toString());
+                val map = HashMap<String, Any>()
+                val list = ArrayList<HashMap<String, Any>>()
+                //map["planes"] =
+                //frame.getUpdatedPlanes()
+                //      .map { p -> hashMapOf<String, Any>("type" to p.type.ordinal) }.toList()
+
+                frame.getUpdatedPlanes().forEach { p ->
+                    val m = HashMap<String, Any>()
+                    m["type"] = p.type.ordinal
+                    m["centerPose"] = FlutterPose.fromPose(p.centerPose).toHashMap()
+                    list.add(m)
+                }
+
+                map["planes"] = list;
+
+                Log.i(TAG, map.toString());
+                _channel.invokeMethod("onSessionUpdated", map);
+                /*frame.getUpdatedPlanes()
+                    .firstOrNull { it.type == Plane.Type.HORIZONTAL_UPWARD_FACING }
+                    ?.let { plane ->
+                        addAnchorNode(plane.createAnchor(plane.centerPose))
+                    }*/
             }
             onSessionResumed = { session ->
                 Log.i(TAG, "onSessionCreated")

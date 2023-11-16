@@ -12,7 +12,7 @@ class SceneView extends StatefulWidget {
 
   final ARSceneviewConfig arSceneviewConfig;
 
-  final Function(String)? onSessionUpdated;
+  final Function(SessionFrame)? onSessionUpdated;
 
   final Function(TrackingFailureReason)? onTrackingFailureChanged;
   final List<AugmentedImage>? augmentedImages;

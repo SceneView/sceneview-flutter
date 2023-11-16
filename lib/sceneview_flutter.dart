@@ -11,6 +11,7 @@ import 'package:sceneview_flutter/arsceneview_config.dart';
 import 'package:sceneview_flutter/augmented_image.dart';
 import 'package:sceneview_flutter/sceneview_flutter_platform_interface.dart';
 import 'package:sceneview_flutter/sceneview_node.dart';
+import 'package:sceneview_flutter/session_frame.dart';
 import 'package:sceneview_flutter/tracking_failure_reason.dart';
 
 part 'sceneview_controller.dart';

@@ -6,7 +6,7 @@ part of 'plane_renderer.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$PlaneRendererImpl _$$PlaneRendererImplFromJson(Map<String, dynamic> json) =>
+_$PlaneRendererImpl _$$PlaneRendererImplFromJson(Map json) =>
     _$PlaneRendererImpl(
       isVisible: json['isVisible'] as bool? ?? true,
       isEnabled: json['isEnabled'] as bool? ?? true,

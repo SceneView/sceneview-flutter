@@ -1,5 +1,6 @@
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:sceneview_flutter/sceneview_node.dart';
+import 'package:sceneview_flutter/session_frame.dart';
 import 'package:sceneview_flutter/tracking_failure_reason.dart';
 
 import 'sceneview_flutter_method_channel.dart';
@@ -33,7 +34,7 @@ abstract class SceneviewFlutterPlatform extends PlatformInterface {
     throw UnimplementedError('addNode() has not been implemented.');
   }
 
-  Stream<String> onSessionUpdated() {
+  Stream<SessionFrame> onSessionUpdated() {
     throw UnimplementedError('onSessionUpdated() has not been implemented.');
   }
 

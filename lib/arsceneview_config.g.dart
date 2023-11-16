@@ -6,13 +6,12 @@ part of 'arsceneview_config.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$ARSceneviewConfigImpl _$$ARSceneviewConfigImplFromJson(
-        Map<String, dynamic> json) =>
+_$ARSceneviewConfigImpl _$$ARSceneviewConfigImplFromJson(Map json) =>
     _$ARSceneviewConfigImpl(
       planeRenderer: json['planeRenderer'] == null
           ? const PlaneRenderer()
           : PlaneRenderer.fromJson(
-              json['planeRenderer'] as Map<String, dynamic>),
+              Map<String, dynamic>.from(json['planeRenderer'] as Map)),
       lightEstimationMode: $enumDecodeNullable(
               _$LightEstimationModeEnumMap, json['lightEstimationMode']) ??
           LightEstimationMode.disabled,

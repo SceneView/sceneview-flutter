@@ -23,6 +23,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   TrackingFailureReason? reason;
 
+  bool posed = false;
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -46,16 +47,25 @@ class _MyAppState extends State<MyApp> {
               ],
               onViewCreated: (controller) {
                 print('flutter: onViewCreated');
-                controller.addNode(
-                  SceneViewNode(
-                    fileLocation: 'assets/models/MaterialSuite.glb',
-                    position: KotlinFloat3(z: -1.0),
-                    rotation: KotlinFloat3(x: 15),
-                  ),
-                );
+                // controller.addNode(
+                //   SceneViewNode(
+                //     fileLocation: 'assets/models/MaterialSuite.glb',
+                //     position: KotlinFloat3(z: -1.0),
+                //     rotation: KotlinFloat3(x: 15),
+                //   ),
+                // );
               },
-              onSessionUpdated: (text) {
-                print('onSessionUpdated: $text');
+              onSessionUpdated: (frame) {
+                print('onSessionUpdated: $frame');
+                // if(!posed){
+                //   controller.addNode(
+                //     SceneViewNode(
+                //       fileLocation: 'assets/models/MaterialSuite.glb',
+                //       // position: frame.centerPose.
+                //       // rotation: KotlinFloat3(x: 15),
+                //     ),
+                //   );
+                // }
               },
               onTrackingFailureChanged: (reason) {
                 print('onTrackingFailureChanged: $reason');

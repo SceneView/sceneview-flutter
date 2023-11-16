@@ -6,8 +6,7 @@ part of 'augmented_image.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$AuAugmentedImageImpl _$$AuAugmentedImageImplFromJson(
-        Map<String, dynamic> json) =>
+_$AuAugmentedImageImpl _$$AuAugmentedImageImplFromJson(Map json) =>
     _$AuAugmentedImageImpl(
       name: json['name'] as String,
       location: json['location'] as String,
