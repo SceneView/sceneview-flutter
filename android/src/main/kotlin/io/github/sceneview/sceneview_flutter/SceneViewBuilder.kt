@@ -2,14 +2,14 @@ package io.github.sceneview.sceneview_flutter
 
 import android.app.Activity
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.Lifecycle
-import com.google.ar.core.Config.LightEstimationMode
 import io.flutter.plugin.common.BinaryMessenger
 
 class SceneViewBuilder {
 
-
-    var config = ARSceneViewConfig()
+    var augmentedImages = listOf<SceneViewAugmentedImage>()
+    lateinit var config: ARSceneViewConfig
 
     fun build(
         context: Context,
@@ -18,18 +18,11 @@ class SceneViewBuilder {
         lifecycle: Lifecycle,
         viewId: Int
     ): SceneViewWrapper {
+        Log.i("SceneViewBuilder", config.toString());
         val controller =
-            SceneViewWrapper(context, activity, lifecycle, messenger, viewId, config);
+            SceneViewWrapper(context, activity, lifecycle, messenger, viewId, config, augmentedImages);
         //controller.init()
         //controller.setMyLocationEnabled(myLocationEnabled)
         return controller
-    }
-
-    fun setAugmentedImages(images: List<SceneViewAugmentedImage>) {
-        config.augmentedImages = images
-    }
-
-    fun setLightEstimationMode(lightEstimationMode: LightEstimationMode) {
-        config.lightEstimationMode = lightEstimationMode
     }
 }

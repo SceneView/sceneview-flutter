@@ -28,6 +28,7 @@ class SceneViewWrapper(
     messenger: BinaryMessenger,
     id: Int,
     arConfig: ARSceneViewConfig,
+    private val augmentedImages: List<SceneViewAugmentedImage>,
 ) : PlatformView, MethodCallHandler {
     private val TAG = "SceneViewWrapper"
     private var sceneView: ARSceneView
@@ -46,21 +47,25 @@ class SceneViewWrapper(
 
     init {
         Log.i(TAG, "init")
-        Log.i(TAG, "there are " + arConfig.augmentedImages.size.toString() + " augmentedImages")
+        Log.i(TAG, "there are " + augmentedImages.size.toString() + " augmentedImages")
 
         sceneView = ARSceneView(context, sharedLifecycle = lifecycle)
         sceneView.apply {
+
+            planeRenderer.isEnabled = arConfig.planeRenderer.isEnabled;
+            planeRenderer.isVisible = arConfig.planeRenderer.isVisible;
+
             configureSession { session, config ->
-                arConfig.augmentedImages.forEach {
+                augmentedImages.forEach {
                     config.addAugmentedImage(session, it.name, it.bitmap)
                 }
 
                 config.lightEstimationMode = arConfig.lightEstimationMode
-                config.depthMode = when (session.isDepthModeSupported(Config.DepthMode.AUTOMATIC)) {
-                    true -> Config.DepthMode.AUTOMATIC
+                config.depthMode = when (session.isDepthModeSupported(arConfig.depthMode)) {
+                    true -> arConfig.depthMode
                     else -> Config.DepthMode.DISABLED
                 }
-                config.instantPlacementMode = Config.InstantPlacementMode.DISABLED
+                config.instantPlacementMode = arConfig.instantPlacementMode
             }
             onSessionUpdated = { session, frame ->
                 _channel.invokeMethod("onSessionUpdated", frame.timestamp.toString());

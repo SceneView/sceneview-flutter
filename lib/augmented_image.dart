@@ -6,7 +6,7 @@ part 'augmented_image.g.dart';
 
 @freezed
 class AugmentedImage with _$AugmentedImage {
-  factory AugmentedImage({
+  const factory AugmentedImage({
     required String name,
     required String location,
   }) = _AuAugmentedImage;

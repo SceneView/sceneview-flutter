@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:sceneview_flutter/arsceneview_config.dart';
 import 'package:sceneview_flutter/augmented_image.dart';
+import 'package:sceneview_flutter/depth_mode.dart';
+import 'package:sceneview_flutter/instant_placement_mode.dart';
 import 'package:sceneview_flutter/light_estimation_mode.dart';
 
 import 'package:sceneview_flutter/sceneview_flutter.dart';
 import 'package:sceneview_flutter/sceneview_node.dart';
+import 'package:sceneview_flutter/tracking_failure_reason.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,6 +21,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  TrackingFailureReason? reason;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -27,9 +33,16 @@ class _MyAppState extends State<MyApp> {
         body: Stack(
           children: [
             SceneView(
-              lightEstimationMode: LightEstimationMode.AMBIENT_INTENSITY,
+              arSceneviewConfig: ARSceneviewConfig(
+                lightEstimationMode: LightEstimationMode.ambientIntensity,
+                instantPlacementMode: InstantPlacementMode.disabled,
+                depthMode: DepthMode.rawDepthOnly,
+              ),
               augmentedImages: [
-                AugmentedImage(name: 'rabbit',location: 'assets/augmentedimages/rabbit.jpg', ),
+                AugmentedImage(
+                  name: 'rabbit',
+                  location: 'assets/augmentedimages/rabbit.jpg',
+                ),
               ],
               onViewCreated: (controller) {
                 print('flutter: onViewCreated');
@@ -41,13 +54,26 @@ class _MyAppState extends State<MyApp> {
                   ),
                 );
               },
-              onSessionUpdated: (text){
+              onSessionUpdated: (text) {
                 print('onSessionUpdated: $text');
               },
-              onTrackingFailureChanged: (reason){
+              onTrackingFailureChanged: (reason) {
                 print('onTrackingFailureChanged: $reason');
+                if (this.reason != reason) {
+                  setState(() {
+                    this.reason = reason;
+                  });
+                }
               },
             ),
+            if (reason != null && reason != TrackingFailureReason.NONE)
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Text(
+                  reason!.name,
+                  style: TextStyle(color: Colors.white, fontSize: 30),
+                ),
+              ),
           ],
         ),
       ),

@@ -108,7 +108,7 @@ class __$$AuAugmentedImageImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$AuAugmentedImageImpl implements _AuAugmentedImage {
-  _$AuAugmentedImageImpl({required this.name, required this.location});
+  const _$AuAugmentedImageImpl({required this.name, required this.location});
 
   factory _$AuAugmentedImageImpl.fromJson(Map<String, dynamic> json) =>
       _$$AuAugmentedImageImplFromJson(json);
@@ -153,7 +153,7 @@ class _$AuAugmentedImageImpl implements _AuAugmentedImage {
 }
 
 abstract class _AuAugmentedImage implements AugmentedImage {
-  factory _AuAugmentedImage(
+  const factory _AuAugmentedImage(
       {required final String name,
       required final String location}) = _$AuAugmentedImageImpl;
 

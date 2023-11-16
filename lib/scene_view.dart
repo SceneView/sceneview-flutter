@@ -3,18 +3,19 @@ part of scene_view_flutter;
 class SceneView extends StatefulWidget {
   const SceneView({
     super.key,
+    this.arSceneviewConfig = const ARSceneviewConfig(),
     this.onViewCreated,
     this.onSessionUpdated,
     this.onTrackingFailureChanged,
     this.augmentedImages,
-    this.lightEstimationMode,
   });
+
+  final ARSceneviewConfig arSceneviewConfig;
 
   final Function(String)? onSessionUpdated;
 
   final Function(TrackingFailureReason)? onTrackingFailureChanged;
   final List<AugmentedImage>? augmentedImages;
-  final LightEstimationMode? lightEstimationMode;
   final Function(SceneViewController)? onViewCreated;
 
   @override
@@ -34,7 +35,7 @@ class _SceneViewState extends State<SceneView> {
       creationParams['augmentedImages'] =
           widget.augmentedImages!.map((e) => e.toJson()).toList();
     }
-    creationParams['lightEstimationMode'] = widget.lightEstimationMode?.index;
+    creationParams['arSceneviewConfig'] = widget.arSceneviewConfig.toJson();
   }
 
   @override
