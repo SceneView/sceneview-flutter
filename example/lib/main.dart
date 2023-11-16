@@ -24,6 +24,9 @@ class _MyAppState extends State<MyApp> {
   TrackingFailureReason? reason;
 
   bool posed = false;
+
+  late SceneViewController sceneViewController;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -47,6 +50,7 @@ class _MyAppState extends State<MyApp> {
               ],
               onViewCreated: (controller) {
                 print('flutter: onViewCreated');
+                sceneViewController = controller;
                 // controller.addNode(
                 //   SceneViewNode(
                 //     fileLocation: 'assets/models/MaterialSuite.glb',
@@ -57,15 +61,16 @@ class _MyAppState extends State<MyApp> {
               },
               onSessionUpdated: (frame) {
                 print('onSessionUpdated: $frame');
-                // if(!posed){
-                //   controller.addNode(
-                //     SceneViewNode(
-                //       fileLocation: 'assets/models/MaterialSuite.glb',
-                //       // position: frame.centerPose.
-                //       // rotation: KotlinFloat3(x: 15),
-                //     ),
-                //   );
-                // }
+                if (!posed && frame.planes.isNotEmpty) {
+                  sceneViewController.addNode(
+                    SceneViewNode(
+                      fileLocation: 'assets/models/MaterialSuite.glb',
+                      position: frame.planes.first.centerPose?.translation,
+                      rotation: frame.planes.first.centerPose?.rotation,
+                    ),
+                  );
+                  posed = true;
+                }
               },
               onTrackingFailureChanged: (reason) {
                 print('onTrackingFailureChanged: $reason');

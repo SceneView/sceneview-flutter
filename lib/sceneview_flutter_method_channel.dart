@@ -46,7 +46,7 @@ class MethodChannelSceneViewFlutter extends SceneviewFlutterPlatform {
 
   @override
   void addNode(SceneViewNode node) {
-    _channel?.invokeMethod('addNode', node.toMap());
+    _channel?.invokeMethod('addNode', node.toJson());
   }
 
   @override

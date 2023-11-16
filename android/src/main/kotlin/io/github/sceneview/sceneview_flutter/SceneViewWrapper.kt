@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.FrameLayout
 import androidx.lifecycle.Lifecycle
 import com.google.ar.core.Config
+import dev.romainguy.kotlin.math.Float3
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -161,7 +162,11 @@ class SceneViewWrapper(
             val modelNode = ModelNode(modelInstance = model, scaleToUnits = 1.0f).apply {
                 transform(
                     position = flutterNode.position,
-                    rotation = flutterNode.rotation,
+                    rotation = Float3(
+                        flutterNode.rotation.x,
+                        flutterNode.rotation.y,
+                        flutterNode.rotation.z
+                    ),
                     //scale = flutterNode.scale,
                 )
                 //scaleToUnitsCube(flutterNode.scaleUnits)

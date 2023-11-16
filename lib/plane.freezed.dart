@@ -22,6 +22,7 @@ Plane _$PlaneFromJson(Map<String, dynamic> json) {
 mixin _$Plane {
   @JsonEnum()
   PlaneType? get type => throw _privateConstructorUsedError;
+  Pose? get centerPose => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -33,7 +34,7 @@ abstract class $PlaneCopyWith<$Res> {
   factory $PlaneCopyWith(Plane value, $Res Function(Plane) then) =
       _$PlaneCopyWithImpl<$Res, Plane>;
   @useResult
-  $Res call({@JsonEnum() PlaneType? type});
+  $Res call({@JsonEnum() PlaneType? type, Pose? centerPose});
 }
 
 /// @nodoc
@@ -50,12 +51,17 @@ class _$PlaneCopyWithImpl<$Res, $Val extends Plane>
   @override
   $Res call({
     Object? type = freezed,
+    Object? centerPose = freezed,
   }) {
     return _then(_value.copyWith(
       type: freezed == type
           ? _value.type
           : type // ignore: cast_nullable_to_non_nullable
               as PlaneType?,
+      centerPose: freezed == centerPose
+          ? _value.centerPose
+          : centerPose // ignore: cast_nullable_to_non_nullable
+              as Pose?,
     ) as $Val);
   }
 }
@@ -67,7 +73,7 @@ abstract class _$$PlaneImplCopyWith<$Res> implements $PlaneCopyWith<$Res> {
       __$$PlaneImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({@JsonEnum() PlaneType? type});
+  $Res call({@JsonEnum() PlaneType? type, Pose? centerPose});
 }
 
 /// @nodoc
@@ -82,12 +88,17 @@ class __$$PlaneImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? type = freezed,
+    Object? centerPose = freezed,
   }) {
     return _then(_$PlaneImpl(
       type: freezed == type
           ? _value.type
           : type // ignore: cast_nullable_to_non_nullable
               as PlaneType?,
+      centerPose: freezed == centerPose
+          ? _value.centerPose
+          : centerPose // ignore: cast_nullable_to_non_nullable
+              as Pose?,
     ));
   }
 }
@@ -95,7 +106,7 @@ class __$$PlaneImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$PlaneImpl implements _Plane {
-  const _$PlaneImpl({@JsonEnum() this.type});
+  const _$PlaneImpl({@JsonEnum() this.type, this.centerPose});
 
   factory _$PlaneImpl.fromJson(Map<String, dynamic> json) =>
       _$$PlaneImplFromJson(json);
@@ -103,10 +114,12 @@ class _$PlaneImpl implements _Plane {
   @override
   @JsonEnum()
   final PlaneType? type;
+  @override
+  final Pose? centerPose;
 
   @override
   String toString() {
-    return 'Plane(type: $type)';
+    return 'Plane(type: $type, centerPose: $centerPose)';
   }
 
   @override
@@ -114,12 +127,14 @@ class _$PlaneImpl implements _Plane {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$PlaneImpl &&
-            (identical(other.type, type) || other.type == type));
+            (identical(other.type, type) || other.type == type) &&
+            (identical(other.centerPose, centerPose) ||
+                other.centerPose == centerPose));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, type);
+  int get hashCode => Object.hash(runtimeType, type, centerPose);
 
   @JsonKey(ignore: true)
   @override
@@ -136,13 +151,17 @@ class _$PlaneImpl implements _Plane {
 }
 
 abstract class _Plane implements Plane {
-  const factory _Plane({@JsonEnum() final PlaneType? type}) = _$PlaneImpl;
+  const factory _Plane(
+      {@JsonEnum() final PlaneType? type,
+      final Pose? centerPose}) = _$PlaneImpl;
 
   factory _Plane.fromJson(Map<String, dynamic> json) = _$PlaneImpl.fromJson;
 
   @override
   @JsonEnum()
   PlaneType? get type;
+  @override
+  Pose? get centerPose;
   @override
   @JsonKey(ignore: true)
   _$$PlaneImplCopyWith<_$PlaneImpl> get copyWith =>

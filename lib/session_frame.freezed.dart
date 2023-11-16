@@ -21,7 +21,6 @@ SessionFrame _$SessionFrameFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$SessionFrame {
   List<Plane> get planes => throw _privateConstructorUsedError;
-  Pose? get centerPose => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -35,7 +34,7 @@ abstract class $SessionFrameCopyWith<$Res> {
           SessionFrame value, $Res Function(SessionFrame) then) =
       _$SessionFrameCopyWithImpl<$Res, SessionFrame>;
   @useResult
-  $Res call({List<Plane> planes, Pose? centerPose});
+  $Res call({List<Plane> planes});
 }
 
 /// @nodoc
@@ -52,17 +51,12 @@ class _$SessionFrameCopyWithImpl<$Res, $Val extends SessionFrame>
   @override
   $Res call({
     Object? planes = null,
-    Object? centerPose = freezed,
   }) {
     return _then(_value.copyWith(
       planes: null == planes
           ? _value.planes
           : planes // ignore: cast_nullable_to_non_nullable
               as List<Plane>,
-      centerPose: freezed == centerPose
-          ? _value.centerPose
-          : centerPose // ignore: cast_nullable_to_non_nullable
-              as Pose?,
     ) as $Val);
   }
 }
@@ -75,7 +69,7 @@ abstract class _$$SessionFrameImplCopyWith<$Res>
       __$$SessionFrameImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({List<Plane> planes, Pose? centerPose});
+  $Res call({List<Plane> planes});
 }
 
 /// @nodoc
@@ -90,17 +84,12 @@ class __$$SessionFrameImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? planes = null,
-    Object? centerPose = freezed,
   }) {
     return _then(_$SessionFrameImpl(
       planes: null == planes
           ? _value._planes
           : planes // ignore: cast_nullable_to_non_nullable
               as List<Plane>,
-      centerPose: freezed == centerPose
-          ? _value.centerPose
-          : centerPose // ignore: cast_nullable_to_non_nullable
-              as Pose?,
     ));
   }
 }
@@ -108,8 +97,7 @@ class __$$SessionFrameImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$SessionFrameImpl implements _SessionFrame {
-  const _$SessionFrameImpl(
-      {final List<Plane> planes = const [], this.centerPose})
+  const _$SessionFrameImpl({final List<Plane> planes = const []})
       : _planes = planes;
 
   factory _$SessionFrameImpl.fromJson(Map<String, dynamic> json) =>
@@ -125,11 +113,8 @@ class _$SessionFrameImpl implements _SessionFrame {
   }
 
   @override
-  final Pose? centerPose;
-
-  @override
   String toString() {
-    return 'SessionFrame(planes: $planes, centerPose: $centerPose)';
+    return 'SessionFrame(planes: $planes)';
   }
 
   @override
@@ -137,15 +122,13 @@ class _$SessionFrameImpl implements _SessionFrame {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$SessionFrameImpl &&
-            const DeepCollectionEquality().equals(other._planes, _planes) &&
-            (identical(other.centerPose, centerPose) ||
-                other.centerPose == centerPose));
+            const DeepCollectionEquality().equals(other._planes, _planes));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, const DeepCollectionEquality().hash(_planes), centerPose);
+  int get hashCode =>
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(_planes));
 
   @JsonKey(ignore: true)
   @override
@@ -162,16 +145,13 @@ class _$SessionFrameImpl implements _SessionFrame {
 }
 
 abstract class _SessionFrame implements SessionFrame {
-  const factory _SessionFrame(
-      {final List<Plane> planes, final Pose? centerPose}) = _$SessionFrameImpl;
+  const factory _SessionFrame({final List<Plane> planes}) = _$SessionFrameImpl;
 
   factory _SessionFrame.fromJson(Map<String, dynamic> json) =
       _$SessionFrameImpl.fromJson;
 
   @override
   List<Plane> get planes;
-  @override
-  Pose? get centerPose;
   @override
   @JsonKey(ignore: true)
   _$$SessionFrameImplCopyWith<_$SessionFrameImpl> get copyWith =>

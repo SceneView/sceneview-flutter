@@ -10,7 +10,6 @@ part 'session_frame.g.dart';
 class SessionFrame with _$SessionFrame {
   const factory SessionFrame({
     @Default([]) List<Plane> planes,
-    Pose? centerPose,
   }) = _SessionFrame;
 
   factory SessionFrame.fromJson(Map<String, dynamic> json) =>
