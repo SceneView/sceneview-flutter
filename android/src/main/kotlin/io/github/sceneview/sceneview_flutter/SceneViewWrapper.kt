@@ -62,6 +62,9 @@ class SceneViewWrapper(
                 }
                 config.instantPlacementMode = Config.InstantPlacementMode.DISABLED
             }
+            onSessionUpdated = { session, frame ->
+                _channel.invokeMethod("onSessionUpdated#onMove", frame.timestamp.toString());
+            }
             onSessionResumed = { session ->
                 Log.i(TAG, "onSessionCreated")
             }
@@ -73,6 +76,7 @@ class SceneViewWrapper(
             }
             onTrackingFailureChanged = { reason ->
                 Log.i(TAG, "onTrackingFailureChanged: $reason");
+                _channel.invokeMethod("onTrackingFailureChanged", reason?.ordinal);
             }
         }
         sceneView.layoutParams = FrameLayout.LayoutParams(

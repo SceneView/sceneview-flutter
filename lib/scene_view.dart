@@ -1,22 +1,18 @@
-import 'dart:async';
-
-import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
-import 'package:sceneview_flutter/augmented_image.dart';
-import 'package:sceneview_flutter/light_estimation_mode.dart';
-import 'package:sceneview_flutter/sceneview_controller.dart';
+part of scene_view_flutter;
 
 class SceneView extends StatefulWidget {
   const SceneView({
     super.key,
     this.onViewCreated,
+    this.onSessionUpdated,
+    this.onTrackingFailureChanged,
     this.augmentedImages,
     this.lightEstimationMode,
   });
 
+  final Function(String)? onSessionUpdated;
+
+  final Function(TrackingFailureReason)? onTrackingFailureChanged;
   final List<AugmentedImage>? augmentedImages;
   final LightEstimationMode? lightEstimationMode;
   final Function(SceneViewController)? onViewCreated;
@@ -75,7 +71,7 @@ class _SceneViewState extends State<SceneView> {
   }
 
   Future<void> onPlatformViewCreated(int id) async {
-    final controller = await SceneViewController.init(id);
+    final controller = await SceneViewController.init(id, this);
     _controller.complete(controller);
     widget.onViewCreated?.call(controller);
   }

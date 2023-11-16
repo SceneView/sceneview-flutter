@@ -1,5 +1,6 @@
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:sceneview_flutter/sceneview_node.dart';
+import 'package:sceneview_flutter/tracking_failure_reason.dart';
 
 import 'sceneview_flutter_method_channel.dart';
 
@@ -32,7 +33,16 @@ abstract class SceneviewFlutterPlatform extends PlatformInterface {
     throw UnimplementedError('addNode() has not been implemented.');
   }
 
-  void dispose(int sceneId){
+  Stream<String> onSessionUpdated() {
+    throw UnimplementedError('onSessionUpdated() has not been implemented.');
+  }
+
+  Stream<TrackingFailureReason> onTrackingFailureChanged() {
+    throw UnimplementedError(
+        'onTrackingFailureChanged() has not been implemented.');
+  }
+
+  void dispose(int sceneId) {
     throw UnimplementedError('dispose() has not been implemented.');
   }
 }

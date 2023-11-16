@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sceneview_flutter/augmented_image.dart';
 import 'package:sceneview_flutter/light_estimation_mode.dart';
-import 'dart:async';
 
 import 'package:sceneview_flutter/sceneview_flutter.dart';
 import 'package:sceneview_flutter/sceneview_node.dart';
@@ -41,6 +40,12 @@ class _MyAppState extends State<MyApp> {
                     rotation: KotlinFloat3(x: 15),
                   ),
                 );
+              },
+              onSessionUpdated: (text){
+                print('onSessionUpdated: $text');
+              },
+              onTrackingFailureChanged: (reason){
+                print('onTrackingFailureChanged: $reason');
               },
             ),
           ],

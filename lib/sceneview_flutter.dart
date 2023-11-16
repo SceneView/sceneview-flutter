@@ -1,6 +1,17 @@
-import 'sceneview_flutter_platform_interface.dart';
+library scene_view_flutter;
 
-export 'sceneview_controller.dart';
-export 'scene_view.dart';
+import 'package:flutter/material.dart';
+import 'dart:async';
 
-class SceneviewFlutter {}
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
+import 'package:sceneview_flutter/augmented_image.dart';
+import 'package:sceneview_flutter/light_estimation_mode.dart';
+import 'package:sceneview_flutter/sceneview_flutter_platform_interface.dart';
+import 'package:sceneview_flutter/sceneview_node.dart';
+import 'package:sceneview_flutter/tracking_failure_reason.dart';
+
+part 'sceneview_controller.dart';
+part 'scene_view.dart';
