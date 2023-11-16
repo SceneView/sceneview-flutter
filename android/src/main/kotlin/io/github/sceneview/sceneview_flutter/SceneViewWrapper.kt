@@ -7,14 +7,19 @@ import android.view.View
 import android.widget.FrameLayout
 import androidx.lifecycle.Lifecycle
 import com.google.ar.core.Config
+import dev.romainguy.kotlin.math.Float3
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.platform.PlatformView
 import io.github.sceneview.ar.ARSceneView
+import io.github.sceneview.ar.arcore.addAugmentedImage
+import io.github.sceneview.ar.arcore.getUpdatedPlanes
+import io.github.sceneview.ar.node.AugmentedImageNode
 import io.github.sceneview.model.ModelInstance
 import io.github.sceneview.node.ModelNode
+import io.github.sceneview.sceneview_flutter.flutter_models.FlutterPose
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -25,11 +30,14 @@ class SceneViewWrapper(
     lifecycle: Lifecycle,
     messenger: BinaryMessenger,
     id: Int,
+    arConfig: ARSceneViewConfig,
+    private val augmentedImages: List<SceneViewAugmentedImage>,
 ) : PlatformView, MethodCallHandler {
     private val TAG = "SceneViewWrapper"
     private var sceneView: ARSceneView
     private val _mainScope = CoroutineScope(Dispatchers.Main)
     private val _channel = MethodChannel(messenger, "scene_view_$id")
+    val _augmentedImageNodes = mutableListOf<AugmentedImageNode>()
 
     override fun getView(): View {
         Log.i(TAG, "getView:")
@@ -42,15 +50,49 @@ class SceneViewWrapper(
 
     init {
         Log.i(TAG, "init")
+        Log.i(TAG, "there are " + augmentedImages.size.toString() + " augmentedImages")
+
         sceneView = ARSceneView(context, sharedLifecycle = lifecycle)
         sceneView.apply {
+
+            planeRenderer.isEnabled = arConfig.planeRenderer.isEnabled;
+            planeRenderer.isVisible = arConfig.planeRenderer.isVisible;
+
             configureSession { session, config ->
-                config.lightEstimationMode = Config.LightEstimationMode.ENVIRONMENTAL_HDR
-                config.depthMode = when (session.isDepthModeSupported(Config.DepthMode.AUTOMATIC)) {
-                    true -> Config.DepthMode.AUTOMATIC
+                augmentedImages.forEach {
+                    config.addAugmentedImage(session, it.name, it.bitmap)
+                }
+
+                config.lightEstimationMode = arConfig.lightEstimationMode
+                config.depthMode = when (session.isDepthModeSupported(arConfig.depthMode)) {
+                    true -> arConfig.depthMode
                     else -> Config.DepthMode.DISABLED
                 }
-                config.instantPlacementMode = Config.InstantPlacementMode.DISABLED
+                config.instantPlacementMode = arConfig.instantPlacementMode
+            }
+            onSessionUpdated = { session, frame ->
+                val map = HashMap<String, Any>()
+                val list = ArrayList<HashMap<String, Any>>()
+                //map["planes"] =
+                //frame.getUpdatedPlanes()
+                //      .map { p -> hashMapOf<String, Any>("type" to p.type.ordinal) }.toList()
+
+                frame.getUpdatedPlanes().forEach { p ->
+                    val m = HashMap<String, Any>()
+                    m["type"] = p.type.ordinal
+                    m["centerPose"] = FlutterPose.fromPose(p.centerPose).toHashMap()
+                    list.add(m)
+                }
+
+                map["planes"] = list;
+
+                Log.i(TAG, map.toString());
+                _channel.invokeMethod("onSessionUpdated", map);
+                /*frame.getUpdatedPlanes()
+                    .firstOrNull { it.type == Plane.Type.HORIZONTAL_UPWARD_FACING }
+                    ?.let { plane ->
+                        addAnchorNode(plane.createAnchor(plane.centerPose))
+                    }*/
             }
             onSessionResumed = { session ->
                 Log.i(TAG, "onSessionCreated")
@@ -63,6 +105,7 @@ class SceneViewWrapper(
             }
             onTrackingFailureChanged = { reason ->
                 Log.i(TAG, "onTrackingFailureChanged: $reason");
+                _channel.invokeMethod("onTrackingFailureChanged", reason?.ordinal);
             }
         }
         sceneView.layoutParams = FrameLayout.LayoutParams(
@@ -119,7 +162,11 @@ class SceneViewWrapper(
             val modelNode = ModelNode(modelInstance = model, scaleToUnits = 1.0f).apply {
                 transform(
                     position = flutterNode.position,
-                    rotation = flutterNode.rotation,
+                    rotation = Float3(
+                        flutterNode.rotation.x,
+                        flutterNode.rotation.y,
+                        flutterNode.rotation.z
+                    ),
                     //scale = flutterNode.scale,
                 )
                 //scaleToUnitsCube(flutterNode.scaleUnits)

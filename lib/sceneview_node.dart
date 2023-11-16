@@ -1,17 +1,24 @@
-class SceneViewNode {
-  final String fileLocation;
-  final KotlinFloat3? position;
-  final KotlinFloat3? rotation;
-  final double? scale;
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:sceneview_flutter/vector_converter.dart';
+import 'package:vector_math/vector_math.dart';
 
-  SceneViewNode({
-    required this.fileLocation,
-    this.position,
-    this.rotation,
-    this.scale,
-  });
+part 'sceneview_node.freezed.dart';
 
-  Map<String, dynamic> toMap() {
+part 'sceneview_node.g.dart';
+
+@freezed
+class SceneViewNode with _$SceneViewNode {
+  const factory SceneViewNode({
+    required String fileLocation,
+    @Vector3Converter() Vector3? position,
+    @Vector4Converter() Vector4? rotation,
+    double? scale,
+  }) = _SceneViewNode;
+
+  factory SceneViewNode.fromJson(Map<String, dynamic> json) =>
+      _$SceneViewNodeFromJson(json);
+
+/*  Map<String, dynamic> toMap() {
     final map = {
       'fileLocation': fileLocation,
       'position': position?.toMap(),
@@ -20,10 +27,10 @@ class SceneViewNode {
     };
     map.removeWhere((key, value) => value == null);
     return map;
-  }
+  }*/
 }
 
-class KotlinFloat3 {
+/*class KotlinFloat3 {
   final double x;
   final double y;
   final double z;
@@ -37,4 +44,4 @@ class KotlinFloat3 {
       'z': z,
     };
   }
-}
+}*/

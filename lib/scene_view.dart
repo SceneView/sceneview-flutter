@@ -1,18 +1,21 @@
-import 'dart:async';
-
-import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
-import 'package:sceneview_flutter/sceneview_controller.dart';
+part of scene_view_flutter;
 
 class SceneView extends StatefulWidget {
   const SceneView({
     super.key,
+    this.arSceneviewConfig = const ARSceneviewConfig(),
     this.onViewCreated,
+    this.onSessionUpdated,
+    this.onTrackingFailureChanged,
+    this.augmentedImages,
   });
 
+  final ARSceneviewConfig arSceneviewConfig;
+
+  final Function(SessionFrame)? onSessionUpdated;
+
+  final Function(TrackingFailureReason)? onTrackingFailureChanged;
+  final List<AugmentedImage>? augmentedImages;
   final Function(SceneViewController)? onViewCreated;
 
   @override
@@ -23,12 +26,22 @@ class _SceneViewState extends State<SceneView> {
   final Completer<SceneViewController> _controller =
       Completer<SceneViewController>();
 
+  final Map<String, dynamic> creationParams = <String, dynamic>{};
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.augmentedImages != null) {
+      creationParams['augmentedImages'] =
+          widget.augmentedImages!.map((e) => e.toJson()).toList();
+    }
+    creationParams['arSceneviewConfig'] = widget.arSceneviewConfig.toJson();
+  }
+
   @override
   Widget build(BuildContext context) {
     // This is used in the platform side to register the view.
     const String viewType = 'SceneView';
-    // Pass parameters to the platform side.
-    const Map<String, dynamic> creationParams = <String, dynamic>{};
 
     return PlatformViewLink(
       viewType: viewType,
@@ -59,7 +72,7 @@ class _SceneViewState extends State<SceneView> {
   }
 
   Future<void> onPlatformViewCreated(int id) async {
-    final controller = await SceneViewController.init(id);
+    final controller = await SceneViewController.init(id, this);
     _controller.complete(controller);
     widget.onViewCreated?.call(controller);
   }
@@ -71,7 +84,7 @@ class _SceneViewState extends State<SceneView> {
   }
 
   Future<void> _disposeController() async {
-    final SceneViewController controller = await _controller.future;
+    final controller = await _controller.future;
     controller.dispose();
   }
 }

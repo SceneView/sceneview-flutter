@@ -14,8 +14,23 @@ class SceneViewFactory(
     private val messenger: BinaryMessenger,
     private val lifecycle: Lifecycle,
 ) : PlatformViewFactory(StandardMessageCodec.INSTANCE) {
-    override fun create(context: Context, viewId: Int, args: Any?): PlatformView {
+    override fun create(context: Context, viewId: Int, params: Any?): PlatformView {
         Log.d("Factory", "Creating new view instance")
-        return SceneViewWrapper(context, activity, lifecycle, messenger, viewId);
+        val p = params as Map<String, Any>
+        val builder = SceneViewBuilder()
+        if(p.containsKey("arSceneviewConfig")){
+            val c = p["arSceneviewConfig"] as Map<String,Any>
+            builder.config = ARSceneViewConfig.from(c)
+        }
+        if (p.containsKey("augmentedImages")) {
+            builder.augmentedImages =
+                Convert.toAugmentedImages(
+                    context,
+                    p["augmentedImages"] as List<Map<String, Any>>
+                )
+        }
+
+        return builder.build(context, activity, messenger, lifecycle, viewId);
+        //return SceneViewWrapper(context, activity, lifecycle, messenger, viewId);
     }
 }
