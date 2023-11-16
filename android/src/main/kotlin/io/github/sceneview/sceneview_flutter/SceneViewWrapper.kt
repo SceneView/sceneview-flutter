@@ -63,7 +63,7 @@ class SceneViewWrapper(
                 config.instantPlacementMode = Config.InstantPlacementMode.DISABLED
             }
             onSessionUpdated = { session, frame ->
-                _channel.invokeMethod("onSessionUpdated#onMove", frame.timestamp.toString());
+                _channel.invokeMethod("onSessionUpdated", frame.timestamp.toString());
             }
             onSessionResumed = { session ->
                 Log.i(TAG, "onSessionCreated")
